@@ -1,15 +1,33 @@
-import itertools
+import time
 
-def fuerza_bruta(contrasenia, long_max=6):
-    c = "abcdefghijklmnopqrstuvwxyz0123456789"
-    
-    for longitud in range(1, long_max + 1):
-        print(f"Longitud {longitud}...")
-        for intento in itertools.product(c, repeat=longitud):
-            intento_s = ''.join(intento)
-            if intento_s == contrasenia:
-                return intento_s
-    return None
-contrasenia = "pass67"
-encontrada = fuerza_bruta(contrasenia, long_max=8)
-print(f"Contraseña encontrada: {encontrada}")
+contraseña = "Ab3"
+minusculas = "abcdefghijklmnopqrstuvwxyz"
+mayusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+numeros    = "0123456789"
+signos     = "!@#$%^&*()_+-=[]{}|;':\",./<>?`~ "
+alfabeto = minusculas + mayusculas + numeros + signos
+
+tiempo_inicio = time.time()
+intentos = 0
+encontrada = False
+
+def generar(intentos_actuales, longitud, actual=""):
+    global intentos, encontrada, tiempo_inicio
+    if encontrada:
+        return
+    if len(actual) == longitud:
+        intentos += 1
+        if actual == contraseña:
+            encontrada = True
+            tiempo_final = time.time()
+            print(f"Contraseña acertada: {actual}")
+            print(f"Intentos: {intentos}")
+            print(f"Tiempo transcurrido: {tiempo_final - tiempo_inicio:.4f} segundos")
+        return
+    for c in alfabeto:
+        generar(intentos_actuales, longitud, actual + c)
+
+for longitud in range(1, len(contraseña) + 1):
+    if encontrada:
+        break
+    generar(intentos, longitud)
